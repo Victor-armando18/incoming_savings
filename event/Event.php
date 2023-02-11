@@ -31,7 +31,7 @@
             return $this->year;
         }
 
-        public function getDate() {
+        public function getDate(): string {
             return $this->date;
         }
         
