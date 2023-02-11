@@ -1,0 +1,41 @@
+<?php
+
+    namespace event\repository;
+
+    use configuration\Connection;
+    use event\Event;
+
+    require_once __DIR__."/../../config/Connection.php";
+
+    final class EventRepositoryPDOMySQLImpl implements  EventRepository{
+        
+        private $connection;
+
+        public function __construct() {
+            $this->connection = Connection::get();
+        }
+
+        public function save(Event $event): void {
+            $query = <<<SQL
+                INSERT INTO evento VALUES(DEFAULT, :ano, :data, CURRENT_DATE, CURRENT_TIME);
+            SQL;
+            $this->connection->beginTransaction();
+            $transacao = $this->connection->prepare($query);
+            $transacao->bindValue(":ano", $event->getyear());
+            $transacao->bindValue(":data", $event->getDate());
+            $transacao->execute();
+        }
+
+        public function findByYearAndDate(int $year, string $date) {
+        }
+
+        public function findAllByYear(int $value): array {
+            return [];
+        }
+
+        public function findAll(): array {
+            return [];
+        }
+    }
+
+?>
