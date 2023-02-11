@@ -2,7 +2,7 @@
 
     namespace activity\service;
 
-use activity\ActivityRepository;
+    use activity\ActivityRepository;
 
     final class GetAllActivities{
 
