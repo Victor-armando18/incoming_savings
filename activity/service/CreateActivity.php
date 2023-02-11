@@ -24,7 +24,8 @@
             
             if($command instanceof CreateActivityCommand){
                 $activity = $this->repository->getByName($command->getName());
-                if(isset($activity)) throw new RuntimeException("Actividade {$command->getName()} já está cadastrada!");
+                if(isset($activity) && !empty($activity)) 
+                    throw new RuntimeException("Actividade {$command->getName()} já está cadastrada!");
                 $this->repository->save(new Activity($command->getName()));
                 return;
             }

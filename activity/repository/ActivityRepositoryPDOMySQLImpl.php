@@ -4,13 +4,14 @@
     use activity\ActivityRepository;
     use configuration\Connection;
 
-    require_once __DIR__."/AtivityRepository.php";
+    require_once __DIR__."/ActivityRepository.php";
+    require_once __DIR__."/../../config/Connection.php";
 
     final class ActivityRepositoryPDOMySQLImpl implements ActivityRepository{
         
         private $connection;
 
-        public function __constrcut(){ $this->connection = Connection::get(); }
+        public function __construct(){ $this->connection = Connection::get(); }
 
         public function save(Activity $activity): void {
             try {
@@ -38,7 +39,7 @@
         public function getAll(): array {
             try {
                 $transacao = $this->connection->Query("SELECT nome FROM actividade");
-                return $transacao->fetchAll();
+                return $transacao->fetchAll(\PDO::FETCH_COLUMN);
             } catch (\PDOException $th) {
                 throw new \RuntimeException("Houve um falha ao buscar as actividades. Motivo: ".$th->getMessage());
             }
