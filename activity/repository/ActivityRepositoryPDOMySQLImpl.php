@@ -3,7 +3,6 @@
     use activity\Activity;
     use activity\ActivityRepository;
     use configuration\Connection;
-    use PDOException;
 
     require_once __DIR__."/AtivityRepository.php";
 
@@ -17,11 +16,11 @@
             try {
                 $this->connection->beginTransaction();
                 $transacao = $this->connection->prepare("INSERT INTO actividade VALUES(:nome);");
-                $transacao->bindValue(':nome', $activity->getName(), PDO::PARAM_STR);
+                $transacao->bindValue(':nome', $activity->getName(), \PDO::PARAM_STR);
                 if($transacao->execute()) $this->connection->commit();
-            } catch (PDOException $th) {
+            } catch (\PDOException $th) {
                 $this->connection->rollback();
-                throw new RuntimeException("Houve um falha ao tentar cadastrar a actividade. Motivo: ".$th->getMessage());
+                throw new \RuntimeException("Houve um falha ao tentar cadastrar a actividade. Motivo: ".$th->getMessage());
             }
         }
         
@@ -31,8 +30,8 @@
                 $transacao->bindValue(':nome', $value);
                 $transacao->execute();
                 return $transacao->fetchColumn();
-            } catch (PDOException $th) {
-                throw new RuntimeException("Houve um falha ao consultar a actividade. Motivo: ".$th->getMessage());
+            } catch (\PDOException $th) {
+                throw new \RuntimeException("Houve um falha ao consultar a actividade. Motivo: ".$th->getMessage());
             }
         }
         
@@ -40,8 +39,8 @@
             try {
                 $transacao = $this->connection->Query("SELECT nome FROM actividade");
                 return $transacao->fetchAll();
-            } catch (PDOException $th) {
-                throw new RuntimeException("Houve um falha ao buscar as actividades. Motivo: ".$th->getMessage());
+            } catch (\PDOException $th) {
+                throw new \RuntimeException("Houve um falha ao buscar as actividades. Motivo: ".$th->getMessage());
             }
         }
     }
