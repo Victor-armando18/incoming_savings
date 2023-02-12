@@ -4,6 +4,7 @@
 
     use configuration\Connection;
     use event\Event;
+    use RuntimeException;
 
     require_once __DIR__."/../../config/Connection.php";
 
@@ -19,11 +20,16 @@
             $query = <<<SQL
                 INSERT INTO evento VALUES(DEFAULT, :ano, :data, CURRENT_DATE, CURRENT_TIME);
             SQL;
-            $this->connection->beginTransaction();
-            $transacao = $this->connection->prepare($query);
-            $transacao->bindValue(":ano", $event->getyear());
-            $transacao->bindValue(":data", $event->getDate());
-            $transacao->execute();
+            try {
+                $this->connection->beginTransaction();
+                $transacao = $this->connection->prepare($query);
+                $transacao->bindValue(":ano", $event->getyear());
+                $transacao->bindValue(":data", $event->getDate());
+                if($transacao->execute()) $this->connection->commit();
+            } catch (\PDOException $th) {
+                $this->connection->rollBack();
+                throw new RuntimeException("Houve um erro ao tentar cadastrar o evento. Motivo: ".$th->getMessage());
+            }
         }
 
         public function findByYearAndDate(int $year, string $date) {
